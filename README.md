@@ -33,6 +33,10 @@ batch for sdweb-merge-block-weighted-gui
   - 余裕があるなら Delete Merged Model each time をオフにすれば残ります
 - どの画像がどの設定だったかは PNG Info で確認することができます
 
+## History Formatの編集
+
+- Googleスプレッドシートを使うと便利だと思う
+
 ## モデルの選択
 
 - ファイル名に一致するモデルを使用します
