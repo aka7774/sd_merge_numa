@@ -3,6 +3,14 @@ batch for sdweb-merge-block-weighted-gui
 
 - SSDのバックアップは忘れずに
 
+## これは何？
+
+- マージする
+- 画像出す
+- (マージしたモデルを消す)
+
+を指定された分だけ繰り返すバッチスクリプトやで
+
 ## あそびかた
 
 1. まず sdweb-merge-block-weighted-gui を入れる
