@@ -23,14 +23,19 @@ batch for sdweb-merge-block-weighted-gui
   - VAE, Hypernetをはじめすべての設定を使うので不要なものはオフに
 5. Scriptドロップダウンで Merge Numa を選択
 6. history.tsv と同じ形式でマージしたい内容を記述する
-7. txt2imgの Generate ボタンを押す
-8. 寝る
+7. ストレージ容量に自信があるなら Delete Merged Model each time をオフにすればモデルが全部残る
+8. txt2imgの Generate ボタンを押す
+9. 寝る
 
 ## 生成画像の比較
 
-- 残念ながら X/Y Plotを使うにはモデルを削除しないで残す必要があります
-  - weights 25個を1つずつ調べるだけでも25*4GBくらい必要になる
-  - 余裕があるなら Delete Merged Model each time をオフにすれば残ります
+あとからX/Y plot画像を作るのはこれが便利
+
+Fake X/Y plot
+https://github.com/aka7774/sd_fake_xyplot
+
+### 生成画像の確認
+
 - どの画像がどの設定だったかは PNG Info で確認することができます
 
 ## History Formatの編集
@@ -41,3 +46,20 @@ batch for sdweb-merge-block-weighted-gui
 
 - ファイル名に一致するモデルを使用します
   - ハッシュは無視します
+
+同じハッシュのモデルばかりで困ったときは
+
+Filer
+https://github.com/aka7774/sd_filer
+
+- sha256が計算できる
+
+Infotext Ex
+https://github.com/aka7774/sd_infotext_ex
+
+- PNG Infoにsha256を残せる
+
+Infotexts
+https://github.com/aka7774/sd_infotexts
+
+- PNG Infoに残ったsha256を使って画像を生成できる
