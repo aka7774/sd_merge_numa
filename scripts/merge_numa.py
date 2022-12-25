@@ -7,7 +7,7 @@ import importlib
 import gradio as gr
 
 from modules import scripts, script_callbacks, shared
-from modules import sd_models
+from modules import sd_models, devices
 from modules.processing import Processed, process_images
 
 class Script(scripts.Script):
@@ -17,7 +17,8 @@ class Script(scripts.Script):
     def ui(self, is_img2img):
         batch = gr.Textbox(lines=10,label="Batch(History Format, without Header)")
         each_delete = gr.Checkbox(value=True,label="Delete Merged Model each time")
-        return [batch, each_delete]
+        use_cpu = gr.Checkbox(value=True,label="Use CPU")
+        return [batch, each_delete, use_cpu]
 
     def on_show(self, batch):
         return [gr.Textbox.update(visible=True),
@@ -25,31 +26,46 @@ class Script(scripts.Script):
                 gr.Checkbox.update(visible=True),
                 ]
 
-    def run(self, p, batch, each_delete):
+    def run(self, p, batch, each_delete, use_cpu):
         images = []
         # 1行につき1モデルと1画像を作成する
         for line in batch.split("\n"):
             rs = line.rstrip("\r\n").split("\t")
-            if len(rs) != 9:
-                raise ValueError(f"Unknown format: {line}")
 
             # unpack(ハッシュは対応しない)
-            model_0 = rs[0]
-            model_1 = rs[2]
-            output_file = os.path.join('models', 'Stable-diffusion', rs[4])
-            base_alpha = float(rs[6])
-            weights = rs[8]
-        
-            # ハイフンのあるディレクトリのインポート
-            bw = importlib.import_module(f"extensions.sdweb-merge-block-weighted-gui.scripts.merge_block_weighted")
-            merge = getattr(bw, 'merge')
+            try:
+                model_0 = rs[0]
+                model_1 = rs[2]
+                output_file = os.path.join('models', 'Stable-diffusion', rs[4])
+                base_alpha = float(rs[6])
+                weights1 = rs[8]
+            except:
+                raise ValueError(f"Unknown format: {rs}")
+
+            try:
+                weights2 = rs[9]
+            except:
+                pass
 
             # 引数
-            device = "cpu" # devices.get_optimal_device()
+            if use_cpu:
+                device = "cpu"
+            else:
+                device = devices.get_optimal_device()
             allow_overwrite=True
             verbose=False
 
-            merge(weights, model_0, model_1, device, base_alpha, output_file, allow_overwrite, verbose)
+            # ハイフンのあるディレクトリのインポート
+            if not weights2:
+                # MBW
+                bw = importlib.import_module(f"extensions.sdweb-merge-block-weighted-gui.scripts.mbw.merge_block_weighted")
+                merge = getattr(bw, 'merge')
+                merge(weights1, model_0, model_1, device, base_alpha, output_file, allow_overwrite, verbose)
+            else:
+                # MBW each
+                bw = importlib.import_module(f"extensions.sdweb-merge-block-weighted-gui.scripts.mbw_each.merge_block_weighted_mod")
+                merge = getattr(bw, 'merge')
+                merge(weights1, weights2, model_0, model_1, device, base_alpha, output_file, allow_overwrite, verbose)
 
             # モデルが増えたので一覧更新
             sd_models.list_models()
