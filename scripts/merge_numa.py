@@ -36,7 +36,7 @@ class Script(scripts.Script):
             try:
                 model_0 = rs[0]
                 model_1 = rs[2]
-                output_file = os.path.join('models', 'Stable-diffusion', rs[4])
+                output_file = os.path.join(sd_models.model_path, rs[4])
                 base_alpha = float(rs[6])
                 weights1 = rs[8]
             except:
@@ -58,12 +58,12 @@ class Script(scripts.Script):
             # ハイフンのあるディレクトリのインポート
             if not weights2:
                 # MBW
-                bw = importlib.import_module(f"extensions.sdweb-merge-block-weighted-gui.scripts.mbw.merge_block_weighted")
+                bw = importlib.import_module("extensions.sdweb-merge-block-weighted-gui.scripts.mbw.merge_block_weighted")
                 merge = getattr(bw, 'merge')
                 merge(weights1, model_0, model_1, device, base_alpha, output_file, allow_overwrite, verbose)
             else:
                 # MBW each
-                bw = importlib.import_module(f"extensions.sdweb-merge-block-weighted-gui.scripts.mbw_each.merge_block_weighted_mod")
+                bw = importlib.import_module("extensions.sdweb-merge-block-weighted-gui.scripts.mbw_each.merge_block_weighted_mod")
                 merge = getattr(bw, 'merge')
                 merge(weights1, weights2, model_0, model_1, device, base_alpha, output_file, allow_overwrite, verbose)
 
